@@ -1,0 +1,5 @@
+build/
+chainos.iso
+iso/
+kernel.backup/
+*.o

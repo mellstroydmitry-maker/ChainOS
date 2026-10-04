@@ -1,0 +1,28 @@
+CC = gcc
+AS = gcc
+LD = ld
+
+CFLAGS = -m32 -ffreestanding -fno-pie -fno-stack-protector -Wall -Wextra
+ASFLAGS = -m32 -c
+LDFLAGS = -m elf_i386 -T kernel/linker.ld
+
+KERNEL = build/chainos.kernel
+
+all: $(KERNEL)
+
+build:
+	mkdir -p build
+
+build/boot.o: kernel/arch/x86_64/boot/boot.S | build
+	$(AS) $(ASFLAGS) $< -o $@
+
+build/kernel.o: kernel/kernel.c | build
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(KERNEL): build/boot.o build/kernel.o
+	$(LD) $(LDFLAGS) $^ -o $@
+
+clean:
+	rm -rf build iso
+
+.PHONY: all clean
